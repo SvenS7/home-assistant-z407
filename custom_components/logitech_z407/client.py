@@ -178,7 +178,16 @@ class Z407Client:
     async def _async_get_ble_device(self):
         from homeassistant.components import bluetooth
 
-        return bluetooth.async_ble_device_from_address(self.hass, self.address, True)
+        device = bluetooth.async_ble_device_from_address(
+            self.hass, self.address, True
+        )
+        if device is None:
+            _LOGGER.debug(
+                "Z407 (%s) not found in HA Bluetooth cache. "
+                "The Bluetooth integration may not have seen it recently.",
+                self.address,
+            )
+        return device
 
     async def _async_establish_client(self, device):
         if self._client_factory is not None:
@@ -224,13 +233,19 @@ class Z407Client:
         try:
             while True:
                 payload = await asyncio.wait_for(self._response_queue.get(), timeout=15)
+                _LOGGER.debug(
+                    "Z407 handshake received: %s (expected %s)",
+                    payload.hex(),
+                    expected.hex(),
+                )
                 if payload == expected:
                     return
                 self._process_payload(payload)
         except TimeoutError as err:
             raise Z407HandshakeError(
                 f"Logitech Z407 ({self.address}) did not respond during handshake. "
-                "Make sure the speaker is powered on and in range."
+                "Make sure the speaker is powered on, in range, and not "
+                "already connected to the physical remote."
             ) from err
 
     async def _async_wait_for_confirmation(self, command: bytes) -> None:
@@ -262,8 +277,10 @@ class Z407Client:
             raise Z407ClientError(msg) from err
 
     def _async_handle_notification(self, _sender: int, data: bytearray) -> None:
-        self._response_queue.put_nowait(bytes(data))
-        self._process_payload(bytes(data))
+        payload = bytes(data)
+        _LOGGER.debug("Z407 notification received: %s", payload.hex())
+        self._response_queue.put_nowait(payload)
+        self._process_payload(payload)
 
     def _process_payload(self, payload: bytes) -> None:
         if payload in SOURCE_STATUS:
