@@ -310,6 +310,7 @@ class Z407Client:
     def _handle_disconnect(self, *_args) -> None:
         _LOGGER.debug("Z407 disconnected")
         self._state.connected = False
+        self._state.bass_level = None
         self._connection = None
 
     @staticmethod
