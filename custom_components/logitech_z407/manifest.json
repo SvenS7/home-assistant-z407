@@ -1,0 +1,23 @@
+{
+  "domain": "logitech_z407",
+  "name": "Logitech Z407",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [
+    "bluetooth"
+  ],
+  "documentation": "https://github.com/freundTech/logi-z407-reverse-engineering",
+  "integration_type": "device",
+  "iot_class": "local_push",
+  "loggers": [
+    "custom_components.logitech_z407"
+  ],
+  "version": "0.1.0",
+  "bluetooth": [
+    {
+      "connectable": true,
+      "service_uuid": "0000fdc2-0000-1000-8000-00805f9b34fb"
+    }
+  ]
+}
+

@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Logitech Z407",
+        "description": "Select a discovered Logitech Z407 speaker."
+      },
+      "bluetooth": {
+        "title": "Logitech Z407",
+        "description": "Set up the discovered Logitech Z407 speaker."
+      }
+    },
+    "abort": {
+      "already_configured": "This Logitech Z407 speaker is already configured.",
+      "no_devices_found": "No discovered Logitech Z407 speakers are available yet."
+    }
+  },
+  "entity": {
+    "media_player": {
+      "speaker": {
+        "name": "Speaker"
+      }
+    },
+    "select": {
+      "input_source": {
+        "name": "Input source"
+      }
+    },
+    "button": {
+      "bass_up": {
+        "name": "Bass Up"
+      },
+      "bass_down": {
+        "name": "Bass Down"
+      },
+      "pairing": {
+        "name": "Bluetooth Pairing Mode"
+      },
+      "sound_1": {
+        "name": "Sound 1"
+      },
+      "sound_2": {
+        "name": "Sound 2"
+      },
+      "sound_3": {
+        "name": "Sound 3"
+      },
+      "factory_reset": {
+        "name": "Factory Reset"
+      }
+    }
+  }
+}
+
