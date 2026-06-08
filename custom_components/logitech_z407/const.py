@@ -11,6 +11,8 @@ DOMAIN = "logitech_z407"
 MANUFACTURER = "Logitech"
 MODEL = "Z407"
 
+BASS_STEPS = 15
+
 CONF_ADDRESS = "address"
 
 SERVICE_UUID = "0000fdc2-0000-1000-8000-00805f9b34fb"
@@ -104,6 +106,7 @@ class Z407State:
 
     connected: bool = False
     input_source: str | None = None
+    bass_level: int | None = None
 
 
 def build_device_info(address: str) -> DeviceInfo:

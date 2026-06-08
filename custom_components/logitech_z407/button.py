@@ -11,7 +11,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .client import Z407ClientError
-from .const import BUTTON_COMMANDS, DOMAIN, build_device_info
+from .const import BASS_STEPS, BUTTON_COMMANDS, DOMAIN, build_device_info
 from .coordinator import Z407Coordinator
 
 
@@ -26,6 +26,7 @@ class ButtonDefinition:
 BUTTONS = [
     ButtonDefinition("bass_up", "bass_up", "Bass Up"),
     ButtonDefinition("bass_down", "bass_down", "Bass Down"),
+    ButtonDefinition("bass_calibrate", "bass_calibrate", "Calibrate Bass"),
     ButtonDefinition("pairing", "pairing", "Bluetooth Pairing Mode"),
     ButtonDefinition("sound_1", "sound_1", "Sound Mode 1"),
     ButtonDefinition("sound_2", "sound_2", "Sound Mode 2"),
@@ -80,7 +81,16 @@ class LogitechZ407Button(CoordinatorEntity[Z407Coordinator], ButtonEntity):
                 "Make sure the speaker is powered on and Bluetooth is available."
             )
         try:
-            await self._client.async_send_command(BUTTON_COMMANDS[self._button.key])
+            if self._button.key == "bass_calibrate":
+                for _ in range(BASS_STEPS):
+                    await self._client.async_send_command(
+                        BUTTON_COMMANDS["bass_down"]
+                    )
+                self._client.state.bass_level = 0
+            else:
+                await self._client.async_send_command(
+                    BUTTON_COMMANDS[self._button.key]
+                )
             await self.coordinator.async_request_refresh()
         except Z407ClientError:
             raise

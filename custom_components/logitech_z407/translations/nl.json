@@ -28,12 +28,20 @@
         "name": "Ingangsbron"
       }
     },
+    "number": {
+      "bass_level": {
+        "name": "Bassniveau"
+      }
+    },
     "button": {
       "bass_up": {
         "name": "Bass omhoog"
       },
       "bass_down": {
         "name": "Bass omlaag"
+      },
+      "bass_calibrate": {
+        "name": "Bass kalibreren"
       },
       "pairing": {
         "name": "Bluetooth pairing-modus"

@@ -28,12 +28,20 @@
         "name": "Input source"
       }
     },
+    "number": {
+      "bass_level": {
+        "name": "Bass level"
+      }
+    },
     "button": {
       "bass_up": {
         "name": "Bass Up"
       },
       "bass_down": {
         "name": "Bass Down"
+      },
+      "bass_calibrate": {
+        "name": "Calibrate Bass"
       },
       "pairing": {
         "name": "Bluetooth Pairing Mode"

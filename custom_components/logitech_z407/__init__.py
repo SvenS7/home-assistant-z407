@@ -14,7 +14,7 @@ from .coordinator import Z407Coordinator
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS = ["media_player", "select", "button"]
+PLATFORMS = ["media_player", "number", "select", "button"]
 
 _RETRY_DELAYS = (1, 2, 4, 8)
 
