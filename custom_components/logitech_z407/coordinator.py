@@ -20,6 +20,7 @@ class Z407Coordinator(DataUpdateCoordinator[Z407State]):
     def __init__(self, hass: HomeAssistant, client: Z407Client) -> None:
         super().__init__(
             hass,
+            _LOGGER,
             name=DOMAIN,
             update_interval=timedelta(seconds=60),
         )
