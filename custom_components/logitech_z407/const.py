@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from homeassistant.components.media_player import MediaPlayerEntityFeature
-from homeassistant.helpers.device_registry import ConnectionType, DeviceInfo
+from homeassistant.helpers.device_registry import CONNECTION_BLUETOOTH, DeviceInfo
 
 DOMAIN = "logitech_z407"
 MANUFACTURER = "Logitech"
@@ -113,6 +113,6 @@ def build_device_info(address: str) -> DeviceInfo:
         identifiers={(DOMAIN, address)},
         manufacturer=MANUFACTURER,
         model=MODEL,
-        connections={(ConnectionType.BLUETOOTH, address)},
+        connections={(CONNECTION_BLUETOOTH, address)},
         name="Logitech Z407",
     )
