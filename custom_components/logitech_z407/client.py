@@ -87,7 +87,10 @@ class Z407Client:
             try:
                 device = await self._async_get_ble_device()
                 if device is None:
-                    raise Z407ClientError(f"Z407 device {self.address} is not available")
+                    raise Z407ClientError(
+                        f"Logitech Z407 ({self.address}) is not available. "
+                        "Make sure the speaker is powered on and in range."
+                    )
 
                 client = await self._async_establish_client(device)
                 self._connection = _ConnectionContext(
@@ -98,8 +101,17 @@ class Z407Client:
                 await self._async_start_notifications(client)
                 await self._async_handshake(client)
                 self._state.connected = True
-            except Exception:
-                client = self._connection.client if self._connection is not None else None
+            except Z407ClientError:
+                self._connection = None
+                self._state.connected = False
+                raise
+            except Exception as err:
+                _LOGGER.warning(
+                    "Failed to connect to Logitech Z407 (%s): %s", self.address, err
+                )
+                client = (
+                    self._connection.client if self._connection is not None else None
+                )
                 self._connection = None
                 self._state.connected = False
                 if client is not None:
@@ -108,7 +120,10 @@ class Z407Client:
                         result = disconnect()
                         if asyncio.iscoroutine(result):
                             await result
-                raise
+                raise Z407ClientError(
+                    f"Could not connect to Logitech Z407 ({self.address}). "
+                    "Check that Bluetooth is available and the speaker is powered on."
+                ) from err
 
     async def async_disconnect(self) -> None:
         """Disconnect from the device if connected."""
@@ -185,7 +200,9 @@ class Z407Client:
         start_notify = getattr(client, "start_notify", None)
         if start_notify is None:
             return
-        await self._async_maybe_await(start_notify(RESPONSE_CHAR_UUID, self._async_handle_notification))
+        await self._async_maybe_await(
+            start_notify(RESPONSE_CHAR_UUID, self._async_handle_notification)
+        )
 
     async def _async_handshake(self, client) -> None:
         await self._async_write(client, HANDSHAKE_INIT)
@@ -199,7 +216,9 @@ class Z407Client:
         if write_gatt_char is None:
             raise Z407ClientError("BLE client does not support writes")
 
-        await self._async_maybe_await(write_gatt_char(COMMAND_CHAR_UUID, data, response=True))
+        await self._async_maybe_await(
+            write_gatt_char(COMMAND_CHAR_UUID, data, response=True)
+        )
 
     async def _async_expect(self, expected: bytes) -> None:
         try:
@@ -209,9 +228,13 @@ class Z407Client:
                     return
                 self._process_payload(payload)
         except TimeoutError as err:
-            raise Z407HandshakeError(f"Timed out waiting for {expected.hex()}") from err
+            raise Z407HandshakeError(
+                f"Logitech Z407 ({self.address}) did not respond during handshake. "
+                "Make sure the speaker is powered on and in range."
+            ) from err
 
     async def _async_wait_for_confirmation(self, command: bytes) -> None:
+        command_name = self._command_name(command) or command.hex()
         expected_commands = {
             command,
         }
@@ -220,7 +243,7 @@ class Z407Client:
                 payload = await asyncio.wait_for(self._response_queue.get(), timeout=15)
                 if payload in CONFIRMATION_TO_COMMAND:
                     if CONFIRMATION_TO_COMMAND[payload] in {
-                        self._command_name(command),
+                        command_name,
                         "unknown_1",
                     }:
                         return
@@ -231,7 +254,12 @@ class Z407Client:
                     return
                 self._process_payload(payload)
         except TimeoutError as err:
-            raise Z407ClientError(f"Timed out waiting for confirmation of {command.hex()}") from err
+            msg = (
+                f"Logitech Z407 ({self.address}) did not confirm "
+                f"the '{command_name}' command. The speaker may be "
+                "out of range or experiencing interference."
+            )
+            raise Z407ClientError(msg) from err
 
     def _async_handle_notification(self, _sender: int, data: bytearray) -> None:
         self._response_queue.put_nowait(bytes(data))

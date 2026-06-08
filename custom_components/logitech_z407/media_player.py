@@ -65,6 +65,12 @@ class LogitechZ407MediaPlayer(CoordinatorEntity[Z407Coordinator], MediaPlayerEnt
         await self._async_send("volume_down")
 
     async def _async_send(self, action: str) -> None:
+        if not self.available:
+            raise Z407ClientError(
+                f"Cannot {action.replace('_', ' ')}: "
+                f"Logitech Z407 ({self._client.address}) is not connected. "
+                "Make sure the speaker is powered on and Bluetooth is available."
+            )
         try:
             await self._client.async_send_command(MEDIA_COMMANDS[action])
             await self.coordinator.async_request_refresh()

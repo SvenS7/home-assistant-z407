@@ -113,7 +113,7 @@ async def test_handshake_sequence(client, monkeypatch):
         ("async_send_command", BUTTON_COMMANDS["volume_down"], b"\xc0\x03", None),
         ("async_send_command", MEDIA_COMMANDS["media_play_pause"], b"\xc0\x04", None),
         ("async_send_command", MEDIA_COMMANDS["media_next_track"], b"\xc0\x05", None),
-        ("async_send_command", MEDIA_COMMANDS["media_previous_track"], b"\xc0\x06", None),
+        ("async_send_command", MEDIA_COMMANDS["media_previous_track"], b"\xc0\x06", None),  # noqa: E501
         ("async_set_source", SOURCE_COMMANDS["bluetooth"], b"\xc1\x01", "bluetooth"),
         ("async_set_source", SOURCE_COMMANDS["aux"], b"\xc1\x02", "aux"),
         ("async_set_source", SOURCE_COMMANDS["usb"], b"\xc1\x03", "usb"),

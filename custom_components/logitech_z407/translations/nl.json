@@ -1,0 +1,55 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Logitech Z407",
+        "description": "Selecteer een gevonden Logitech Z407 speaker of voer handmatig het Bluetooth MAC-adres in."
+      },
+      "bluetooth": {
+        "title": "Logitech Z407",
+        "description": "Stel de gevonden Logitech Z407 speaker in."
+      }
+    },
+    "error": {
+      "invalid_address": "Ongeldig Bluetooth MAC-adres. Gebruik formaat XX:XX:XX:XX:XX:XX."
+    },
+    "abort": {
+      "already_configured": "Deze Logitech Z407 speaker is al geconfigureerd."
+    }
+  },
+  "entity": {
+    "media_player": {
+      "speaker": {
+        "name": "Speaker"
+      }
+    },
+    "select": {
+      "input_source": {
+        "name": "Ingangsbron"
+      }
+    },
+    "button": {
+      "bass_up": {
+        "name": "Bass omhoog"
+      },
+      "bass_down": {
+        "name": "Bass omlaag"
+      },
+      "pairing": {
+        "name": "Bluetooth pairing-modus"
+      },
+      "sound_1": {
+        "name": "Geluidsmodus 1"
+      },
+      "sound_2": {
+        "name": "Geluidsmodus 2"
+      },
+      "sound_3": {
+        "name": "Geluidsmodus 3"
+      },
+      "factory_reset": {
+        "name": "Fabrieksreset"
+      }
+    }
+  }
+}

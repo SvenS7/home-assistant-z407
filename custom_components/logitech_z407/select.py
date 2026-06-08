@@ -60,6 +60,12 @@ class LogitechZ407InputSelect(CoordinatorEntity[Z407Coordinator], SelectEntity):
         return SOURCE_LABELS.get(source, self._current_option)
 
     async def async_select_option(self, option: str) -> None:
+        if not self.available:
+            raise Z407ClientError(
+                f"Cannot select input source: "
+                f"Logitech Z407 ({self._client.address}) is not connected. "
+                "Make sure the speaker is powered on and Bluetooth is available."
+            )
         source = {
             SOURCE_LABELS[key]: key for key in SOURCE_OPTIONS
         }[option]

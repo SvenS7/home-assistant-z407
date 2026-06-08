@@ -31,4 +31,6 @@ class Z407Coordinator(DataUpdateCoordinator[Z407State]):
             return await self.client.async_refresh()
         except Z407ClientError as err:
             _LOGGER.warning("Z407 refresh failed: %s", err)
-            return self.client.state
+        except Exception as err:
+            _LOGGER.warning("Unexpected error refreshing Z407: %s", err)
+        return self.client.state
