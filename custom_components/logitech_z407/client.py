@@ -217,8 +217,9 @@ class Z407Client:
         await self._async_write(client, HANDSHAKE_INIT)
         await self._async_expect(HANDSHAKE_INIT_RESPONSE)
         await self._async_write(client, HANDSHAKE_ACK)
-        await self._async_expect(HANDSHAKE_ACK_RESPONSE)
-        await self._async_expect(HANDSHAKE_CONNECTED)
+        response = await self._async_expect(HANDSHAKE_ACK_RESPONSE, HANDSHAKE_CONNECTED)
+        if response == HANDSHAKE_ACK_RESPONSE:
+            await self._async_expect(HANDSHAKE_CONNECTED)
 
     async def _async_write(self, client, data: bytes) -> None:
         write_gatt_char = getattr(client, "write_gatt_char", None)
@@ -229,17 +230,17 @@ class Z407Client:
             write_gatt_char(COMMAND_CHAR_UUID, data, response=True)
         )
 
-    async def _async_expect(self, expected: bytes) -> None:
+    async def _async_expect(self, *expected: bytes) -> bytes:
         try:
             while True:
                 payload = await asyncio.wait_for(self._response_queue.get(), timeout=15)
                 _LOGGER.debug(
                     "Z407 handshake received: %s (expected %s)",
                     payload.hex(),
-                    expected.hex(),
+                    " | ".join(e.hex() for e in expected),
                 )
-                if payload == expected:
-                    return
+                if payload in expected:
+                    return payload
                 self._process_payload(payload)
         except TimeoutError as err:
             raise Z407HandshakeError(
