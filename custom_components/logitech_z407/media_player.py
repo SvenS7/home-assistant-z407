@@ -51,6 +51,12 @@ class LogitechZ407MediaPlayer(CoordinatorEntity[Z407Coordinator], MediaPlayerEnt
             return MediaPlayerState.IDLE
         return None
 
+    async def async_media_play(self) -> None:
+        await self._async_send("media_play_pause")
+
+    async def async_media_pause(self) -> None:
+        await self._async_send("media_play_pause")
+
     async def async_media_play_pause(self) -> None:
         await self._async_send("media_play_pause")
 
