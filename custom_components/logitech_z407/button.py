@@ -24,8 +24,6 @@ class ButtonDefinition:
 
 
 BUTTONS = [
-    ButtonDefinition("bass_up", "bass_up", "Bass Up"),
-    ButtonDefinition("bass_down", "bass_down", "Bass Down"),
     ButtonDefinition("bass_calibrate", "bass_calibrate", "Calibrate Bass"),
     ButtonDefinition("pairing", "pairing", "Bluetooth Pairing Mode"),
     ButtonDefinition("sound_1", "sound_1", "Sound Mode 1"),
