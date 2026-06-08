@@ -54,3 +54,52 @@ async def test_user_step_shows_discovered_devices(hass):
     flow.hass = hass
     result = await flow.async_step_user()
     assert result["type"] == FlowResultType.FORM
+
+
+@pytest.mark.asyncio
+async def test_user_step_manual_entry_shows_form_when_empty(hass):
+    flow = LogitechZ407ConfigFlow()
+    flow.hass = hass
+    result = await flow.async_step_user()
+    assert result["type"] == FlowResultType.FORM
+    assert CONF_ADDRESS in result["data_schema"].schema
+
+
+@pytest.mark.asyncio
+async def test_user_step_manual_entry_creates_entry(hass):
+    flow = LogitechZ407ConfigFlow()
+    flow.hass = hass
+    result = await flow.async_step_user(
+        {CONF_ADDRESS: "aa:bb:cc:dd:ee:ff"}
+    )
+    assert result["type"] == FlowResultType.CREATE_ENTRY
+    assert result["data"][CONF_ADDRESS] == "AA:BB:CC:DD:EE:FF"
+
+
+@pytest.mark.asyncio
+async def test_user_step_manual_entry_invalid_address(hass):
+    flow = LogitechZ407ConfigFlow()
+    flow.hass = hass
+    result = await flow.async_step_user(
+        {CONF_ADDRESS: "not-a-mac"}
+    )
+    assert result["type"] == FlowResultType.FORM
+    assert result["errors"] == {CONF_ADDRESS: "invalid_address"}
+
+
+@pytest.mark.asyncio
+async def test_manual_entry_aborts_when_configured(hass):
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        unique_id="AA:BB:CC:DD:EE:FF",
+        data={CONF_ADDRESS: "AA:BB:CC:DD:EE:FF"},
+    )
+    entry.add_to_hass(hass)
+
+    flow = LogitechZ407ConfigFlow()
+    flow.hass = hass
+    result = await flow.async_step_user(
+        {CONF_ADDRESS: "aa:bb:cc:dd:ee:ff"}
+    )
+    assert result["type"] == FlowResultType.ABORT
+    assert result["reason"] == "already_configured"

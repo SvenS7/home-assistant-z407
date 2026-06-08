@@ -3,16 +3,18 @@
     "step": {
       "user": {
         "title": "Logitech Z407",
-        "description": "Select a discovered Logitech Z407 speaker."
+        "description": "Select a discovered Logitech Z407 speaker or enter its Bluetooth MAC address manually."
       },
       "bluetooth": {
         "title": "Logitech Z407",
         "description": "Set up the discovered Logitech Z407 speaker."
       }
     },
+    "error": {
+      "invalid_address": "Invalid Bluetooth MAC address. Use format XX:XX:XX:XX:XX:XX."
+    },
     "abort": {
-      "already_configured": "This Logitech Z407 speaker is already configured.",
-      "no_devices_found": "No discovered Logitech Z407 speakers are available yet."
+      "already_configured": "This Logitech Z407 speaker is already configured."
     }
   },
   "entity": {

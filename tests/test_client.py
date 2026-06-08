@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 from dataclasses import dataclass
 
 import pytest
@@ -21,7 +20,6 @@ from custom_components.logitech_z407.const import (
     SOURCE_COMMANDS,
     SOURCE_STATUS,
 )
-
 
 COMMAND_CONFIRMATIONS = {
     BUTTON_COMMANDS["bass_up"]: b"\xc0\x00",

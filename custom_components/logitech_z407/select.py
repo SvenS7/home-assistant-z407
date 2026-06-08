@@ -9,7 +9,13 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .client import Z407ClientError
-from .const import DOMAIN, SOURCE_COMMANDS, SOURCE_LABELS, SOURCE_OPTIONS, build_device_info
+from .const import (
+    DOMAIN,
+    SOURCE_COMMANDS,
+    SOURCE_LABELS,
+    SOURCE_OPTIONS,
+    build_device_info,
+)
 from .coordinator import Z407Coordinator
 
 

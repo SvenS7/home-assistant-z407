@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
@@ -169,7 +169,10 @@ class Z407Client:
         if self._client_factory is not None:
             return await self._async_maybe_await(self._client_factory(device))
 
-        from bleak_retry_connector import BleakClientWithServiceCache, establish_connection
+        from bleak_retry_connector import (
+            BleakClientWithServiceCache,
+            establish_connection,
+        )
 
         return await establish_connection(
             BleakClientWithServiceCache,
