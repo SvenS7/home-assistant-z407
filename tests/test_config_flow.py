@@ -14,11 +14,27 @@ from custom_components.logitech_z407.const import DOMAIN
 
 
 @pytest.mark.asyncio
-async def test_bluetooth_discovery_creates_entry(hass):
+async def test_bluetooth_discovery_shows_form(hass):
     flow = LogitechZ407ConfigFlow()
     flow.hass = hass
     result = await flow.async_step_bluetooth(
         SimpleNamespace(address="AA:BB:CC:DD:EE:FF", name="Z407")
+    )
+    assert result["type"] == FlowResultType.FORM
+    assert CONF_ADDRESS in result["data_schema"].schema
+
+
+@pytest.mark.asyncio
+async def test_bluetooth_discovery_then_complete_flow(hass):
+    flow = LogitechZ407ConfigFlow()
+    flow.hass = hass
+    result = await flow.async_step_bluetooth(
+        SimpleNamespace(address="AA:BB:CC:DD:EE:FF", name="Z407")
+    )
+    assert result["type"] == FlowResultType.FORM
+
+    result = await flow.async_step_user(
+        {CONF_ADDRESS: "AA:BB:CC:DD:EE:FF"}
     )
     assert result["type"] == FlowResultType.CREATE_ENTRY
     assert result["data"][CONF_ADDRESS] == "AA:BB:CC:DD:EE:FF"
