@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import time
 from collections.abc import Callable
 from dataclasses import dataclass
 
@@ -157,8 +158,15 @@ class Z407Client:
                 await self.async_ensure_connected()
                 client = self._require_client()
                 self._clear_response_queue()
+                t0 = _LOGGER.isEnabledFor(logging.DEBUG) and time.monotonic()
                 await self._async_write(client, command)
                 await self._async_wait_for_confirmation(command)
+                if t0:
+                    _LOGGER.debug(
+                        "Z407 command %s confirmed in %.0fms",
+                        command.hex(),
+                        (time.monotonic() - t0) * 1000,
+                    )
             except Z407ClientError:
                 self._handle_disconnect()
                 raise

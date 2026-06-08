@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from homeassistant.components.media_player import MediaPlayerEntity
+from homeassistant.components.media_player import MediaPlayerEntity, MediaPlayerState
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -47,6 +47,8 @@ class LogitechZ407MediaPlayer(CoordinatorEntity[Z407Coordinator], MediaPlayerEnt
 
     @property
     def state(self) -> str | None:
+        if self.coordinator.data and self.coordinator.data.connected:
+            return MediaPlayerState.IDLE
         return None
 
     async def async_media_play_pause(self) -> None:
