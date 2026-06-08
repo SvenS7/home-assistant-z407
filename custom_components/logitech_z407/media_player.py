@@ -36,6 +36,7 @@ class LogitechZ407MediaPlayer(CoordinatorEntity[Z407Coordinator], MediaPlayerEnt
         super().__init__(coordinator)
         self._client = coordinator.client
         self._attr_unique_id = f"{self._client.address}-media-player"
+        self._media_state = MediaPlayerState.PLAYING
 
     @property
     def device_info(self):
@@ -48,17 +49,27 @@ class LogitechZ407MediaPlayer(CoordinatorEntity[Z407Coordinator], MediaPlayerEnt
     @property
     def state(self) -> str | None:
         if self.coordinator.data and self.coordinator.data.connected:
-            return MediaPlayerState.IDLE
+            return self._media_state
         return None
 
     async def async_media_play(self) -> None:
         await self._async_send("media_play_pause")
+        self._media_state = MediaPlayerState.PLAYING
+        self.async_write_ha_state()
 
     async def async_media_pause(self) -> None:
         await self._async_send("media_play_pause")
+        self._media_state = MediaPlayerState.PAUSED
+        self.async_write_ha_state()
 
     async def async_media_play_pause(self) -> None:
         await self._async_send("media_play_pause")
+        self._media_state = (
+            MediaPlayerState.PAUSED
+            if self._media_state == MediaPlayerState.PLAYING
+            else MediaPlayerState.PLAYING
+        )
+        self.async_write_ha_state()
 
     async def async_media_next_track(self) -> None:
         await self._async_send("media_next_track")
